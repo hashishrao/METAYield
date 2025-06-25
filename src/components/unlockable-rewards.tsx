@@ -34,12 +34,11 @@ export function UnlockableRewards() {
       <CardContent className="space-y-4">
         <div className="flex items-center gap-4 rounded-lg border p-4">
           <Image
-            src="https://placehold.co/100x100.png"
+            src="https://i.postimg.cc/8cJ19v9g/nft-badge.png"
             alt="NFT Badge"
             width={80}
             height={80}
             className="rounded-md"
-            data-ai-hint="futuristic badge"
           />
           <div className="flex-1 space-y-3">
             <p className="font-semibold">
