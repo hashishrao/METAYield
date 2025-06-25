@@ -61,13 +61,13 @@ const mockTransactions: Transaction[] = [
 
 const typeIcons = {
   Repayment: <ArrowDownLeft className="size-5 text-destructive" />,
-  Staking: <ArrowUpRight className="size-5 text-green-500" />,
-  Yield: <ArrowDownLeft className="size-5 text-green-500" />,
+  Staking: <ArrowUpRight className="size-5 text-positive" />,
+  Yield: <ArrowDownLeft className="size-5 text-positive" />,
 };
 
 const statusIcons = {
   Success: (
-    <CheckCircle2 className="size-5 text-green-500" />
+    <CheckCircle2 className="size-5 text-positive" />
   ),
   Failed: <XCircle className="size-5 text-destructive" />,
 };
@@ -92,8 +92,8 @@ export function TransactionHistory() {
                 className={cn(
                   'flex size-10 shrink-0 items-center justify-center rounded-full',
                   tx.type === 'Repayment' && 'bg-destructive/10',
-                  tx.type === 'Staking' && 'bg-green-500/10',
-                  tx.type === 'Yield' && 'bg-green-500/10'
+                  tx.type === 'Staking' && 'bg-positive/10',
+                  tx.type === 'Yield' && 'bg-positive/10'
                 )}
               >
                 {typeIcons[tx.type]}
@@ -104,7 +104,7 @@ export function TransactionHistory() {
                   <p
                     className={cn(
                       'font-semibold',
-                      tx.type === 'Repayment' ? 'text-destructive' : 'text-green-600'
+                      tx.type === 'Repayment' ? 'text-destructive' : 'text-positive'
                     )}
                   >
                     {tx.type === 'Repayment' ? '-' : '+'}

@@ -85,7 +85,7 @@ export function YieldDashboard() {
           </div>
           <div>
             <p className="text-sm text-muted-foreground">Projected Monthly Income</p>
-            <p className="text-2xl font-bold text-green-600">
+            <p className="text-2xl font-bold text-positive">
              + {totalMonthlyIncome.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
             </p>
           </div>
@@ -123,13 +123,13 @@ export function YieldDashboard() {
                         <span>{asset.protocol}</span>
                       </div>
                     </TableCell>
-                    <TableCell className="text-right font-medium text-green-600">
+                    <TableCell className="text-right font-medium text-positive">
                       {asset.apy.toFixed(2)}%
                     </TableCell>
                     <TableCell className="text-right">
                       {asset.balance.toLocaleString()} {asset.symbol}
                     </TableCell>
-                    <TableCell className="text-right text-green-600">
+                    <TableCell className="text-right text-positive">
                       +
                       {monthlyIncome.toLocaleString('en-US', {
                         style: 'currency',

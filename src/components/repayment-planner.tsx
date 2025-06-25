@@ -56,6 +56,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from './ui/skeleton';
 import { Badge } from './ui/badge';
 import { cn } from '@/lib/utils';
+import { Progress } from './ui/progress';
 
 const formSchema = z.object({
   spendingAmount: z.coerce
@@ -96,6 +97,12 @@ export function RepaymentPlanner() {
         riskTolerance: values.riskTolerance,
       });
       setResult(aiResult);
+      if (aiResult) {
+        toast({
+          title: 'Repayment Plan Created',
+          description: 'Your strategy is ready to be executed.',
+        });
+      }
     } catch (error) {
       console.error('AI analysis failed:', error);
       toast({
@@ -213,7 +220,7 @@ export function RepaymentPlanner() {
                 </Badge>
                 <span className={cn(
                   "text-sm font-medium",
-                  result.repaymentFeasibility ? "text-green-600" : "text-destructive"
+                  result.repaymentFeasibility ? "text-positive" : "text-destructive"
                 )}>
                   {result.repaymentFeasibility ? "Feasible" : "Not Feasible"}
                 </span>
@@ -223,13 +230,34 @@ export function RepaymentPlanner() {
                 <p className="text-muted-foreground">{result.explanation}</p>
               </div>
 
-              <div className="space-y-2 rounded-md border bg-background/50 p-3">
+              <div className="rounded-md bg-muted p-3 text-center text-sm">
+                <p className="text-muted-foreground">
+                  You can auto-repay{' '}
+                  <span className="font-bold text-foreground">
+                    {Math.min(100, result.yieldCoverageRatio * 100).toFixed(0)}%
+                  </span>{' '}
+                  of your{' '}
+                  <span className="font-bold text-foreground">
+                    {form.getValues('spendingAmount').toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
+                  </span>{' '}
+                  spending with your current yield.
+                </p>
+              </div>
+
+              <div className="space-y-3 rounded-md border bg-background/50 p-3">
                  <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Yield Coverage</span>
-                    <span className={cn("font-medium", result.yieldCoverageRatio < 1 ? "text-destructive" : "text-green-600")}>
+                    <span className={cn("font-medium", result.yieldCoverageRatio < 1 ? "text-destructive" : "text-positive")}>
                         {(result.yieldCoverageRatio * 100).toFixed(0)}%
                     </span>
                 </div>
+                <Progress 
+                    value={Math.min(100, result.yieldCoverageRatio * 100)} 
+                    className="h-2"
+                    indicatorClassName={
+                        result.yieldCoverageRatio >= 1 ? 'bg-positive' : 'bg-destructive'
+                    }
+                />
                 <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Est. Gas Fee</span>
                     <span className="font-medium">${result.estimatedGasFee.toFixed(2)}</span>
