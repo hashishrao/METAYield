@@ -1,5 +1,6 @@
-# Firebase Studio
+# Project Setup
 
-This is a NextJS starter in Firebase Studio.
+Welcome to the project! Follow these steps to get it running on your local machine.
 
-To get started, take a look at src/app/page.tsx.
+1.  **Clone the repository:** Open your terminal and run the following command to clone the project to your local machine:
+
