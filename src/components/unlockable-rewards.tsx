@@ -41,18 +41,16 @@ export function UnlockableRewards() {
             className="rounded-md"
             data-ai-hint="futuristic badge"
           />
-          <div className="flex-1 space-y-2">
+          <div className="flex-1 space-y-3">
             <p className="font-semibold">
               Auto-repay ${targetAmount.toLocaleString()}+ in 30 days to unlock an NFT badge.
             </p>
-            <div className="space-y-1">
-              <div className="flex justify-between text-sm text-muted-foreground">
+            <div className="space-y-2">
+               <div className="flex justify-between text-sm font-medium">
                 <span>Progress</span>
-                <span>
-                  ${repaidAmount.toLocaleString()} / ${targetAmount.toLocaleString()}
-                </span>
+                <span className="text-muted-foreground">${repaidAmount.toLocaleString()} / ${targetAmount.toLocaleString()}</span>
               </div>
-              <Progress value={progressPercentage} />
+              <Progress value={progressPercentage} aria-label={`${progressPercentage.toFixed(0)}% complete`} />
             </div>
           </div>
         </div>

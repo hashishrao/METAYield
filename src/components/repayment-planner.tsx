@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { Lightbulb, Loader2, Sparkles } from 'lucide-react';
+import { Loader2, Sparkles } from 'lucide-react';
 
 import {
   analyzeYieldStrategy,
@@ -75,10 +75,6 @@ export function RepaymentPlanner() {
         riskTolerance: values.riskTolerance,
       });
       setResult(aiResult);
-      toast({
-        title: 'Analysis Complete',
-        description: "We've generated a repayment strategy for you.",
-      });
     } catch (error) {
       console.error('AI analysis failed:', error);
       toast({
@@ -188,7 +184,7 @@ export function RepaymentPlanner() {
                   )}
                 </div>
                 <div className="flex items-start gap-3 rounded-md bg-muted p-3 text-sm">
-                  <Lightbulb className="mt-1 size-5 shrink-0 text-primary" />
+                  <Sparkles className="mt-1 size-5 shrink-0 animate-pulse text-primary" />
                   <p className="text-muted-foreground">{result.explanation}</p>
                 </div>
               </div>
