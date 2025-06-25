@@ -33,3 +33,37 @@ export function CompoundIcon(props: SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
+
+export function UsdcIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      width="1em"
+      height="1em"
+      {...props}
+    >
+      <path
+        fill="currentColor"
+        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1.5-3h3v-2.5c1.38 0 2.5-1.12 2.5-2.5s-1.12-2.5-2.5-2.5h-1v-1.5h-2v1.5h-1c-.69 0-1.25.56-1.25 1.25v2.5c0 .69.56 1.25 1.25 1.25h1v1.5zm1.5-4.5h1c.28 0 .5.22.5.5s-.22.5-.5.5h-1v-1z"
+      />
+    </svg>
+  );
+}
+
+export function EthIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      width="1em"
+      height="1em"
+      {...props}
+    >
+      <path
+        fill="currentColor"
+        d="m12 1.75l-6.25 10.5L12 16l6.25-3.75L12 1.75zM5.75 13.25L12 22.25l6.25-9l-6.25 3.75L5.75 13.25z"
+      />
+    </svg>
+  );
+}

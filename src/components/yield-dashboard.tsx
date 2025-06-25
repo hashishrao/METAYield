@@ -1,4 +1,4 @@
-import { Landmark, Wallet } from 'lucide-react';
+import { Wallet } from 'lucide-react';
 import type { Asset } from '@/lib/types';
 import {
   Card,
@@ -15,7 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { AaveIcon, CompoundIcon } from './icons';
+import { AaveIcon, CompoundIcon, EthIcon, UsdcIcon } from './icons';
 
 const mockAssets: Asset[] = [
   {
@@ -43,6 +43,12 @@ const mockAssets: Asset[] = [
     icon: <AaveIcon className="size-6 text-[#B6509E]" />,
   },
 ];
+
+const assetIcons = {
+  USDC: <UsdcIcon className="size-5 text-primary" />,
+  ETH: <EthIcon className="size-5 text-foreground" />,
+  WETH: <EthIcon className="size-5 text-foreground" />,
+};
 
 export function YieldDashboard() {
   const totalBalanceUSD = mockAssets.reduce((acc, asset) => {
@@ -103,7 +109,7 @@ export function YieldDashboard() {
                     <TableCell className="font-medium">
                       <div className="flex items-center gap-3">
                         <div className="flex size-8 items-center justify-center rounded-full bg-muted">
-                           <Landmark className="size-5 text-muted-foreground" />
+                           {assetIcons[asset.symbol]}
                         </div>
                         <div>
                          {asset.name}
