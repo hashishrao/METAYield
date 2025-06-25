@@ -2,6 +2,7 @@ import { Header } from '@/components/header';
 import { RepaymentPlanner } from '@/components/repayment-planner';
 import { TransactionHistory } from '@/components/transaction-history';
 import { YieldDashboard } from '@/components/yield-dashboard';
+import { UnlockableRewards } from '@/components/unlockable-rewards';
 
 export default function Home() {
   return (
@@ -13,8 +14,9 @@ export default function Home() {
             <YieldDashboard />
             <TransactionHistory />
           </div>
-          <div className="lg:col-span-1">
+          <div className="flex flex-col gap-8 lg:col-span-1">
             <RepaymentPlanner />
+            <UnlockableRewards />
           </div>
         </div>
       </main>
