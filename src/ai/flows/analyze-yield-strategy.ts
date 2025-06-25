@@ -44,6 +44,14 @@ const AnalyzeYieldStrategyOutputSchema = z.object({
     .describe(
       'A detailed explanation of why the suggested strategy was chosen and the factors considered.'
     ),
+  estimatedGasFee: z
+    .number()
+    .describe('The estimated gas fee in USDC for the transaction.'),
+  yieldCoverageRatio: z
+    .number()
+    .describe(
+      'The ratio of projected monthly yield to the spending amount. E.g., 1.2 means yield is 120% of spending.'
+    ),
 });
 export type AnalyzeYieldStrategyOutput = z.infer<
   typeof AnalyzeYieldStrategyOutputSchema
@@ -66,11 +74,14 @@ const prompt = ai.definePrompt({
   Consider the following factors when determining the suggested strategy and repayment feasibility:
   - **Conservative:** Prioritizes minimizing risk and ensuring repayments are always covered, even with fluctuating yields.  This may result in slower debt repayment.
   - **Balanced:** Aims for a moderate repayment pace while maintaining a reasonable safety margin against yield fluctuations.
-  - **Aggressive:** Focuses on দ্রুত repayment, even if it means taking on more risk and potentially facing insufficient yield in some periods.
+  - **Aggressive:** Focuses on rapid repayment, even if it means taking on more risk and potentially facing insufficient yield in some periods.
 
   Explain your reasoning for choosing the suggested strategy and whether the repayment is feasible, given the user's current yield and spending amount. For example, if the yield barely covers the spending amount, even a conservative strategy might be deemed infeasible.
 
-  The output should be formatted as JSON.  Ensure repaymentFeasibility boolean field and suggestedStrategy enum field are set.
+  Also, provide a realistic estimated gas fee for this USDC transaction on the Linea network (a value between 0.10 and 1.50 USDC).
+  Based on the spending amount and current yield, estimate a yield coverage ratio. A ratio of 1.0 means the yield exactly covers the spending. A ratio above 1.0 is a surplus, and below 1.0 is a deficit. This ratio is critical for determining feasibility.
+
+  The output should be formatted as JSON. Ensure all fields in the output schema are set.
 `,
 });
 

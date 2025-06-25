@@ -4,7 +4,13 @@ import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { Loader2, Sparkles } from 'lucide-react';
+import {
+  Loader2,
+  Sparkles,
+  BadgeCheck,
+  ExternalLink,
+} from 'lucide-react';
+import Link from 'next/link';
 
 import {
   analyzeYieldStrategy,
@@ -35,9 +41,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from './ui/skeleton';
 import { Badge } from './ui/badge';
+import { cn } from '@/lib/utils';
 
 const formSchema = z.object({
   spendingAmount: z.coerce
@@ -53,6 +71,8 @@ const formSchema = z.object({
 
 export function RepaymentPlanner() {
   const [loading, setLoading] = useState(false);
+  const [isExecuting, setIsExecuting] = useState(false);
+  const [executionComplete, setExecutionComplete] = useState(false);
   const [result, setResult] = useState<AnalyzeYieldStrategyOutput | null>(null);
   const { toast } = useToast();
 
@@ -67,6 +87,7 @@ export function RepaymentPlanner() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
     setResult(null);
+    setExecutionComplete(false);
     try {
       const aiResult = await analyzeYieldStrategy({
         // In a real app, this would be fetched from the user's connected wallet and protocols.
@@ -88,8 +109,17 @@ export function RepaymentPlanner() {
     }
   }
 
+  const handleExecute = async () => {
+    setIsExecuting(true);
+    // Simulate API call to a smart contract
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+    setIsExecuting(false);
+    setExecutionComplete(true);
+    // The AlertDialog will close automatically on action click
+  };
+
   return (
-    <Card className="h-full shadow-lg">
+    <Card className="flex h-full flex-col shadow-lg">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Sparkles className="text-primary" />
@@ -157,41 +187,103 @@ export function RepaymentPlanner() {
         </form>
       </Form>
 
-      {(loading || result) && (
-        <CardContent>
+      <CardContent className="flex-1">
+        {loading && (
           <div className="mt-6 rounded-lg border p-4">
-            <h3 className="mb-4 text-lg font-medium">Suggested Strategy</h3>
-            {loading ? (
-              <div className="space-y-4">
-                <Skeleton className="h-6 w-1/2 rounded-md" />
-                <Skeleton className="h-4 w-full rounded-md" />
-                <Skeleton className="h-4 w-full rounded-md" />
-                <Skeleton className="h-4 w-3/4 rounded-md" />
-              </div>
-            ) : result ? (
-              <div className="space-y-4">
-                <div className="flex items-center gap-4">
-                  <Badge
-                    variant={result.repaymentFeasibility ? 'default' : 'destructive'}
-                    className="capitalize"
-                  >
-                    {result.suggestedStrategy}
-                  </Badge>
-                  {result.repaymentFeasibility ? (
-                     <span className="text-sm font-medium text-green-600">Feasible</span>
-                  ) : (
-                     <span className="text-sm font-medium text-destructive">Not Feasible</span>
-                  )}
-                </div>
-                <div className="flex items-start gap-3 rounded-md bg-muted p-3 text-sm">
-                  <Sparkles className="mt-1 size-5 shrink-0 animate-pulse text-primary" />
-                  <p className="text-muted-foreground">{result.explanation}</p>
-                </div>
-              </div>
-            ) : null}
+            <h3 className="mb-4 text-lg font-medium">Analyzing...</h3>
+            <div className="space-y-4">
+              <Skeleton className="h-6 w-1/2 rounded-md" />
+              <Skeleton className="h-4 w-full rounded-md" />
+              <Skeleton className="h-4 w-full rounded-md" />
+              <Skeleton className="h-4 w-3/4 rounded-md" />
+            </div>
           </div>
-        </CardContent>
-      )}
+        )}
+
+        {result && !executionComplete && (
+           <div className="mt-6 rounded-lg border p-4">
+            <h3 className="mb-4 text-lg font-medium">Suggested Strategy</h3>
+            <div className="space-y-4">
+              <div className="flex items-center gap-4">
+                <Badge
+                  variant={result.repaymentFeasibility ? 'default' : 'destructive'}
+                  className="capitalize"
+                >
+                  {result.suggestedStrategy}
+                </Badge>
+                <span className={cn(
+                  "text-sm font-medium",
+                  result.repaymentFeasibility ? "text-green-600" : "text-destructive"
+                )}>
+                  {result.repaymentFeasibility ? "Feasible" : "Not Feasible"}
+                </span>
+              </div>
+              <div className="flex items-start gap-3 rounded-md bg-muted p-3 text-sm">
+                <Sparkles className="mt-1 size-5 shrink-0 animate-pulse text-primary" />
+                <p className="text-muted-foreground">{result.explanation}</p>
+              </div>
+
+              <div className="space-y-2 rounded-md border bg-background/50 p-3">
+                 <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Yield Coverage</span>
+                    <span className={cn("font-medium", result.yieldCoverageRatio < 1 ? "text-destructive" : "text-green-600")}>
+                        {(result.yieldCoverageRatio * 100).toFixed(0)}%
+                    </span>
+                </div>
+                <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Est. Gas Fee</span>
+                    <span className="font-medium">${result.estimatedGasFee.toFixed(2)}</span>
+                </div>
+              </div>
+
+              {result.repaymentFeasibility && (
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button className="w-full">
+                      Execute Repayment
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Confirm Repayment</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        You are about to execute a repayment of{' '}
+                        <b>{form.getValues('spendingAmount').toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</b>
+                        . This action will use your generated yield and incur a small gas fee.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={handleExecute} disabled={isExecuting}>
+                        {isExecuting ? (
+                          <Loader2 className="animate-spin" />
+                        ) : (
+                          'Confirm & Execute'
+                        )}
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              )}
+            </div>
+           </div>
+        )}
+        
+        {executionComplete && (
+            <div className="mt-6 flex flex-col items-center justify-center rounded-lg border border-green-500/50 bg-green-500/10 p-4 text-center">
+              <BadgeCheck className="mb-3 size-12 text-green-600" />
+              <h3 className="text-lg font-semibold text-green-700">Repayment Executed!</h3>
+              <p className="mb-4 text-sm text-green-600/80">
+                Your transaction has been submitted successfully.
+              </p>
+              <Button asChild variant="link">
+                <Link href="https://goerli.lineascan.build/blocks" target="_blank" rel="noopener noreferrer">
+                  View CCTP Transfer (Testnet) <ExternalLink className="ml-2" />
+                </Link>
+              </Button>
+            </div>
+        )}
+      </CardContent>
     </Card>
   );
 }
