@@ -1,5 +1,6 @@
-import { Wallet } from 'lucide-react';
+import { Wallet, ExternalLink } from 'lucide-react';
 import type { Asset } from '@/lib/types';
+import Link from 'next/link';
 import {
   Card,
   CardContent,
@@ -24,7 +25,7 @@ const mockAssets: Asset[] = [
     balance: 10500.75,
     apy: 5.25,
     protocol: 'Aave',
-    icon: <AaveIcon className="size-6 text-[#B6509E]" />,
+    icon: <AaveIcon className="size-6" />,
   },
   {
     name: 'Ethereum',
@@ -32,7 +33,7 @@ const mockAssets: Asset[] = [
     balance: 5.2,
     apy: 3.8,
     protocol: 'Compound',
-    icon: <CompoundIcon className="size-6 text-[#00D395]" />,
+    icon: <CompoundIcon className="size-6" />,
   },
   {
     name: 'Wrapped Ether',
@@ -40,7 +41,7 @@ const mockAssets: Asset[] = [
     balance: 2.1,
     apy: 4.1,
     protocol: 'Aave',
-    icon: <AaveIcon className="size-6 text-[#B6509E]" />,
+    icon: <AaveIcon className="size-6" />,
   },
 ];
 
@@ -118,10 +119,20 @@ export function YieldDashboard() {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <div className="flex items-center gap-2">
+                      <Link
+                        href={
+                          asset.protocol === 'Aave'
+                            ? 'https://aave.com/'
+                            : 'https://compound.finance/'
+                        }
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 hover:underline"
+                      >
                         {asset.icon}
                         <span>{asset.protocol}</span>
-                      </div>
+                        <ExternalLink className="size-3.5 text-muted-foreground" />
+                      </Link>
                     </TableCell>
                     <TableCell className="text-right font-medium text-positive">
                       {asset.apy.toFixed(2)}%
